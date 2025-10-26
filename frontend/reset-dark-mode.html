@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Dark Mode - Al-Furaat SMS</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2563EB;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #2563EB;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+            width: 100%;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .success {
+            background: #10b981;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            display: none;
+        }
+        .log {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔧 Dark Mode Reset Tool</h1>
+        <p>Use this tool to fix dark mode issues in Al-Furaat SMS</p>
+        
+        <button onclick="clearAll()">🗑️ Clear All Data & Reset</button>
+        <button onclick="testToggle()">🧪 Test Toggle Function</button>
+        <button onclick="goToDashboard()">➡️ Go to Dashboard</button>
+        
+        <div class="success" id="success">
+            ✅ Reset successful! You can now close this tab and refresh your dashboard.
+        </div>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logEl = document.getElementById('log')
+            const time = new Date().toLocaleTimeString()
+            logEl.innerHTML += `[${time}] ${message}<br>`
+            logEl.scrollTop = logEl.scrollHeight
+        }
+
+        function clearAll() {
+            log('🔄 Starting reset...')
+            
+            // Clear localStorage
+            localStorage.clear()
+            log('✅ localStorage cleared')
+            
+            // Clear sessionStorage
+            sessionStorage.clear()
+            log('✅ sessionStorage cleared')
+            
+            // Remove dark class
+            document.documentElement.classList.remove('dark')
+            log('✅ Dark class removed')
+            
+            // Set default to light mode
+            localStorage.setItem('darkMode', 'false')
+            log('✅ Set default to light mode')
+            
+            // Show success message
+            document.getElementById('success').style.display = 'block'
+            log('✨ Reset complete!')
+        }
+
+        function testToggle() {
+            log('🧪 Testing toggle...')
+            
+            // Test ON
+            document.documentElement.classList.add('dark')
+            localStorage.setItem('darkMode', 'true')
+            log('🌙 Dark mode ON')
+            
+            setTimeout(() => {
+                // Test OFF
+                document.documentElement.classList.remove('dark')
+                localStorage.setItem('darkMode', 'false')
+                log('☀️ Dark mode OFF')
+                log('✅ Toggle test complete!')
+            }, 2000)
+        }
+
+        function goToDashboard() {
+            log('➡️ Redirecting to dashboard...')
+            setTimeout(() => {
+                window.location.href = 'http://localhost:5173/dashboard'
+            }, 500)
+        }
+
+        // Log initial state
+        window.onload = () => {
+            log('📊 Current State:')
+            log(`   darkMode: ${localStorage.getItem('darkMode')}`)
+            log(`   Dark class: ${document.documentElement.classList.contains('dark')}`)
+            log('Ready to reset!')
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
