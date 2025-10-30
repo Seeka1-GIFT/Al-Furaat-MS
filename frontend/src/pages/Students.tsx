@@ -16,6 +16,10 @@ interface Student {
 	parentName?: string
 	parentPhone?: string
 	photo?: string
+	monthlyFee?: string
+	idCardFee?: string
+	registrationFee?: string
+	payments?: Array<{ month: string; amount: number; date: string }>
 }
 
 export default function Students() {
@@ -30,10 +34,19 @@ export default function Students() {
 	const [successMessage, setSuccessMessage] = useState<string>('')
 	const filterMenuRef = useRef<HTMLDivElement>(null)
 	const [students, setStudents] = useState<Student[]>([
-		{ id: 1, name: 'Ahmed Hassan', grade: '10A', rollNumber: 'ST001', email: 'ahmed@example.com', phone: '+252 61 123 4567' },
-		{ id: 2, name: 'Fatima Ali', grade: '9B', rollNumber: 'ST002', email: 'fatima@example.com', phone: '+252 61 234 5678' },
-		{ id: 3, name: 'Omar Mohamed', grade: '11C', rollNumber: 'ST003', email: 'omar@example.com', phone: '+252 61 345 6789' },
-		{ id: 4, name: 'Aisha Ibrahim', grade: '8A', rollNumber: 'ST004', email: 'aisha@example.com', phone: '+252 61 456 7890' },
+		{ id: 1, name: 'Ahmed Hassan', grade: '10A', rollNumber: 'ST001', email: 'ahmed@example.com', phone: '+252 61 123 4567', monthlyFee: '25', payments: [
+			{ month: '2025-01', amount: 25, date: '2025-01-03' },
+			{ month: '2025-02', amount: 25, date: '2025-02-04' },
+			{ month: '2025-03', amount: 25, date: '2025-03-05' },
+		]},
+		{ id: 2, name: 'Fatima Ali', grade: '9B', rollNumber: 'ST002', email: 'fatima@example.com', phone: '+252 61 234 5678', monthlyFee: '20', payments: [
+			{ month: '2025-02', amount: 20, date: '2025-02-10' },
+		]},
+		{ id: 3, name: 'Omar Mohamed', grade: '11C', rollNumber: 'ST003', email: 'omar@example.com', phone: '+252 61 345 6789', monthlyFee: '22', payments: [] },
+		{ id: 4, name: 'Aisha Ibrahim', grade: '8A', rollNumber: 'ST004', email: 'aisha@example.com', phone: '+252 61 456 7890', monthlyFee: '18', payments: [
+			{ month: '2025-01', amount: 18, date: '2025-01-08' },
+			{ month: '2025-03', amount: 18, date: '2025-03-09' },
+		]},
 	])
 
 	// Filter and search students
@@ -137,6 +150,20 @@ export default function Students() {
 			document.removeEventListener('mousedown', handleClickOutside)
 		}
 	}, [showFilterMenu])
+
+	// Compute months paid and due for a student for the current year
+	function getPaymentSummary(student: Student) {
+		const monthlyFee = Number(student.monthlyFee ?? '0')
+		const currentYear = new Date().getFullYear()
+		const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+		const paidSet = new Set((student.payments ?? []).filter(p => new Date(p.date).getFullYear() === currentYear).map(p => new Date(p.date).getMonth()))
+		const paid = months.map((name, idx) => ({ name, monthIndex: idx, paid: paidSet.has(idx) }))
+		const paidCount = paid.filter(m => m.paid).length
+		const dueCount = 12 - paidCount
+		const collected = paidCount * monthlyFee
+		const dueAmount = dueCount * monthlyFee
+		return { months: paid, collected, dueAmount, monthlyFee }
+	}
 
 	return (
 		<div className="space-y-6">
@@ -269,7 +296,7 @@ export default function Students() {
 				transition={{ duration: 0.5 }}
 				className="rounded-xl border border-gray-200/60 dark:border-gray-800/60 bg-white/70 dark:bg-gray-900/70 backdrop-blur overflow-hidden"
 			>
-				<div className="overflow-x-auto">
+		<div className="overflow-x-auto">
 					<table className="w-full">
 						<thead className="border-b border-gray-200/60 dark:border-gray-800/60 bg-gray-50/50 dark:bg-gray-800/50">
 							<tr>
@@ -277,6 +304,9 @@ export default function Students() {
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Grade</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Roll Number</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Contact</th>
+						<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Monthly Fee</th>
+						<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID Card Fee</th>
+						<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Registration Fee</th>
 								<th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
 							</tr>
 						</thead>
@@ -316,7 +346,10 @@ export default function Students() {
 										</span>
 									</td>
 									<td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{student.rollNumber}</td>
-									<td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{student.phone}</td>
+							<td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{student.phone}</td>
+							<td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{student.monthlyFee ?? '-'}</td>
+							<td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{student.idCardFee ?? '-'}</td>
+							<td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{student.registrationFee ?? '-'}</td>
 									<td className="px-6 py-4 text-right">
 										<div className="flex items-center justify-end gap-2">
 											<button 
@@ -651,6 +684,36 @@ export default function Students() {
 										Edit Student
 									</motion.button>
 								</div>
+							</div>
+
+							{/* Payments Overview */}
+							<div className="mt-8">
+								<h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Payments (This Year)</h3>
+								{(() => { const s = getPaymentSummary(viewingStudent); return (
+									<div className="rounded-xl border border-gray-200/60 dark:border-gray-800/60 bg-white dark:bg-gray-900 p-4">
+										<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+											<div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
+												<div className="text-xs text-gray-500 dark:text-gray-400">Monthly Fee</div>
+												<div className="text-lg font-semibold text-gray-900 dark:text-white">${s.monthlyFee}</div>
+											</div>
+											<div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+												<div className="text-xs text-gray-500 dark:text-gray-400">Collected</div>
+												<div className="text-lg font-semibold text-gray-900 dark:text-white">${s.collected}</div>
+											</div>
+											<div className="p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/20">
+												<div className="text-xs text-gray-500 dark:text-gray-400">Due</div>
+												<div className="text-lg font-semibold text-gray-900 dark:text-white">${s.dueAmount}</div>
+											</div>
+										</div>
+										<div className="grid grid-cols-2 md:grid-cols-6 lg:grid-cols-12 gap-2">
+											{s.months.map(m => (
+												<div key={m.monthIndex} className={`text-center text-xs py-2 rounded-md border ${m.paid ? 'bg-green-100 dark:bg-green-900/30 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200' : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300'}`}>
+													{m.name}
+												</div>
+											))}
+										</div>
+									</div>
+								); })()}
 							</div>
 						</motion.div>
 					</motion.div>
