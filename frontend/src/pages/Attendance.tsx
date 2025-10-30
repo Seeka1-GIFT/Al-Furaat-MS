@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Search, Filter, MoreHorizontal, Edit, Trash2, Eye, Calendar, CheckCircle, XCircle, Clock, Download, BarChart3, Users, TrendingUp, AlertCircle, FileText, CalendarDays } from 'lucide-react'
 
-type AttendanceStatus = 'Present' | 'Absent' | 'Late' | 'Excused'
+type AttendanceStatus = 'Present' | 'Absent' | 'Late'
 
 interface AttendanceRecord {
 	id: number
@@ -41,7 +41,7 @@ export default function Attendance() {
 		{ id: 3, student: 'Omar Mohamed', rollNumber: 'STU003', class: '11C', date: '2024-01-15', status: 'Present', time: '08:10' },
 		{ id: 4, student: 'Aisha Ibrahim', rollNumber: 'STU004', class: '8A', date: '2024-01-15', status: 'Late', time: '08:25', remarks: 'Traffic' },
 		{ id: 5, student: 'Hassan Abdi', rollNumber: 'STU005', class: '10A', date: '2024-01-14', status: 'Present', time: '08:12' },
-		{ id: 6, student: 'Mariam Yusuf', rollNumber: 'STU006', class: '9B', date: '2024-01-14', status: 'Excused', time: '08:00', remarks: 'Medical appointment' },
+		{ id: 6, student: 'Mariam Yusuf', rollNumber: 'STU006', class: '9B', date: '2024-01-14', status: 'Present', time: '08:00', remarks: 'Medical appointment' },
 	]
 	
 	const handleStatusChange = (studentId: number, newStatus: AttendanceStatus) => {
@@ -191,23 +191,7 @@ export default function Attendance() {
 					</div>
 				</motion.div>
 				
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.4, delay: 0.3 }}
-					className="rounded-xl border border-gray-200/60 dark:border-gray-800/60 bg-white/70 dark:bg-gray-900/70 backdrop-blur p-4"
-				>
-					<div className="flex items-center gap-3">
-						<div className="rounded-lg p-2 bg-blue-100 dark:bg-blue-900">
-							<AlertCircle size={20} className="text-blue-600 dark:text-blue-400" />
-						</div>
-						<div>
-							<p className="text-xs text-gray-500 dark:text-gray-400">Excused Today</p>
-							<p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">19</p>
-							<p className="text-xs text-blue-600 dark:text-blue-400">3.6%</p>
-						</div>
-					</div>
-				</motion.div>
+				{/* Excused card removed */}
 			</div>
 
 			{/* Tab Content */}
@@ -274,7 +258,6 @@ export default function Attendance() {
 										<th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Present</th>
 										<th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Absent</th>
 										<th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Late</th>
-										<th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Excused</th>
 									</tr>
 								</thead>
 								<tbody className="divide-y divide-gray-200/60 dark:divide-gray-800/60">
@@ -320,15 +303,6 @@ export default function Attendance() {
 													checked={student.status === 'Late'}
 													onChange={() => handleStatusChange(student.id, 'Late')}
 													className="w-4 h-4 text-yellow-600 focus:ring-yellow-500"
-												/>
-											</td>
-											<td className="px-6 py-4 text-center">
-												<input
-													type="radio"
-													name={`attendance-${student.id}`}
-													checked={student.status === 'Excused'}
-													onChange={() => handleStatusChange(student.id, 'Excused')}
-													className="w-4 h-4 text-blue-600 focus:ring-blue-500"
 												/>
 											</td>
 										</motion.tr>
@@ -481,13 +455,6 @@ export default function Attendance() {
 										</span>
 										<span className="font-semibold text-yellow-700 dark:text-yellow-400">312 (2.8%)</span>
 									</div>
-									<div className="flex justify-between items-center p-2 rounded bg-blue-50 dark:bg-blue-900/20">
-										<span className="text-sm flex items-center gap-2">
-											<AlertCircle size={16} className="text-blue-600" />
-											Total Excused
-										</span>
-										<span className="font-semibold text-blue-700 dark:text-blue-400">111 (1.0%)</span>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -612,7 +579,6 @@ export default function Attendance() {
 									{ label: 'Present', value: 85.2, color: 'bg-green-500', count: 456 },
 									{ label: 'Absent', value: 7.8, color: 'bg-red-500', count: 42 },
 									{ label: 'Late', value: 3.4, color: 'bg-yellow-500', count: 18 },
-									{ label: 'Excused', value: 3.6, color: 'bg-blue-500', count: 19 },
 								].map((item) => (
 									<div key={item.label}>
 										<div className="flex justify-between text-sm mb-2">
